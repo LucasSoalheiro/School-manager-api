@@ -38,11 +38,17 @@ export function loadConfig(): {
     );
   }
 
+  if (env.JWT_SECRET == null) {
+    throw new Error(
+      "JWT_SECRET is totally necessary to the application"
+    );
+  }
+
   return {
     node_env: env.NODE_ENV,
     port: parseInt(env.PORT),
     salt_rounds: parseInt(env.SALT_ROUNDS),
     database_url: env.DATABASE_URL,
-    jwt_secret: env.JWT_SECRET || "default_super_secret_jwt_key_school_management",
+    jwt_secret: env.JWT_SECRET,
   };
 }
