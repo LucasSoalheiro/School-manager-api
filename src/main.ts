@@ -81,5 +81,6 @@ async function main(): Promise<void> {
 
 main().catch((err) => {
   fastify.log.error(err);
+  console.log(err);
   process.exit(1);
 });
