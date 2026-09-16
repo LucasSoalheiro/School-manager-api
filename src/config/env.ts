@@ -1,6 +1,5 @@
-import { env, loadEnvFile } from "node:process";
+import { env } from "node:process";
 
-loadEnvFile("../.env");
 
 enum Node_env {
   dev = "dev",
