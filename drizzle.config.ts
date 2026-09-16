@@ -1,6 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-import { loadEnvFile, env } from "node:process"
-loadEnvFile("./.env")
+import { env } from "node:process"
 export default defineConfig({
   out: "./drizzle",
   schema: "./src/database/drizzle/schemas",
