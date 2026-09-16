@@ -8,7 +8,7 @@
 	"main": "out/main.js",
 	"scripts": {
 		"build": "npx tsc --build",
-		"start": "node --watch ./out/main.js",
+		"start": "node ./out/main.js",
 		"test": "test"
 	},
 	"devDependencies": {
