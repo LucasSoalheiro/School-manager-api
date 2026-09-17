@@ -1,6 +1,7 @@
 import { Email } from "../../entity/value_object/email.js";
 import { Student } from "../../entity/student.js";
 import type { IStudentRepository } from "../../repository/IStudentRepository.js";
+import { BadRequestError } from "../../errors/AppError.js";
 
 type RegisterStudentInput = {
   name: string;
@@ -23,7 +24,7 @@ export class RegisterStudentService {
   ): Promise<RegisterStudentOutput> {
     const existing = await this.studentRepository.findByEmail(input.email);
     if (existing) {
-      throw new Error("Email already in use");
+      throw new BadRequestError("Email already in use");
     }
 
     const email = Email.create(input.email);

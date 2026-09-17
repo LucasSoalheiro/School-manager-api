@@ -1,6 +1,7 @@
 import { Activity } from "../../entity/activity.js";
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
 import type { IActivityRepository } from "../../repository/IActivityRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type AddActivityToClassInput = {
   class_id: string;
@@ -27,10 +28,10 @@ export class AddActivityToClassService {
       input.class_id,
     );
     if (!school_class) {
-      throw new Error(`Class with id "${input.class_id}" not found`);
+      throw new NotFoundError(`Class with id "${input.class_id}" not found`);
     }
     if (!school_class.is_active) {
-      throw new Error("Cannot add activities to an inactive class");
+      throw new BadRequestError("Cannot add activities to an inactive class");
     }
 
     const activity = Activity.create(
@@ -43,7 +44,6 @@ export class AddActivityToClassService {
     school_class.add_activity(activity);
 
     await this.activityRepository.save(activity);
-    await this.schoolClassRepository.update(school_class);
 
     return {
       activity_id: activity.id,

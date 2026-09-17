@@ -1,4 +1,5 @@
 import type { IGradeRepository } from "../../repository/IGradeRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type GradeActivityInput = {
   grade_id: string;
@@ -13,10 +14,14 @@ export class GradeActivityService {
   async execute(input: GradeActivityInput): Promise<void> {
     const grade = await this.gradeRepository.findById(input.grade_id);
     if (!grade) {
-      throw new Error(`Grade with id "${input.grade_id}" not found`);
+      throw new NotFoundError(`Grade with id "${input.grade_id}" not found`);
     }
 
-    grade.grade(input.score, input.feedback);
+    try {
+      grade.grade(input.score, input.feedback);
+    } catch (err: any) {
+      throw new BadRequestError(err.message);
+    }
     await this.gradeRepository.update(grade);
   }
 }

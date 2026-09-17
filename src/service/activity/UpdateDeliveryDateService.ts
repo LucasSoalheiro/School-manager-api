@@ -1,4 +1,5 @@
 import type { IActivityRepository } from "../../repository/IActivityRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type UpdateDeliveryDateInput = {
   activity_id: string;
@@ -13,10 +14,14 @@ export class UpdateDeliveryDateService {
       input.activity_id,
     );
     if (!activity) {
-      throw new Error(`Activity with id "${input.activity_id}" not found`);
+      throw new NotFoundError(`Activity with id "${input.activity_id}" not found`);
     }
 
-    activity.update_delivery_date(input.new_delivery_date);
+    try {
+      activity.update_delivery_date(input.new_delivery_date);
+    } catch (err: any) {
+      throw new BadRequestError(err.message);
+    }
     await this.activityRepository.update(activity);
   }
 }

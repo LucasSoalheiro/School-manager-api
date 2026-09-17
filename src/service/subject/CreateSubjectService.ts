@@ -2,6 +2,7 @@ import { Subject } from "../../entity/subject.js";
 import type { ISubjectRepository } from "../../repository/ISubjectRepository.js";
 import type { ITeacherRepository } from "../../repository/ITeacherRepository.js";
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
+import { NotFoundError } from "../../errors/AppError.js";
 
 type CreateSubjectInput = {
   name: string;
@@ -27,14 +28,14 @@ export class CreateSubjectService {
   async execute(input: CreateSubjectInput): Promise<CreateSubjectOutput> {
     const teacher = await this.teacherRepository.findById(input.teacher_id);
     if (!teacher) {
-      throw new Error(`Teacher with id "${input.teacher_id}" not found`);
+      throw new NotFoundError(`Teacher with id "${input.teacher_id}" not found`);
     }
 
     const school_class = await this.schoolClassRepository.findById(
       input.class_id,
     );
     if (!school_class) {
-      throw new Error(`Class with id "${input.class_id}" not found`);
+      throw new NotFoundError(`Class with id "${input.class_id}" not found`);
     }
 
     const subject = Subject.create(

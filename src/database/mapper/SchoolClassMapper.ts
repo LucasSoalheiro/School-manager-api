@@ -19,17 +19,15 @@ export class SchoolClassMapper {
       students,
       activities,
       raw.status_class,
+      raw.teacher_id ?? null,
     );
   }
 
-  public static toPersistence(
-    school_class: School_class,
-    teacher_id?: string | null,
-  ): SchoolClassInsert {
+  public static toPersistence(school_class: School_class): SchoolClassInsert {
     return {
       id: school_class.id,
       class_name: school_class.class_name,
-      teacher_id: teacher_id ?? null,
+      teacher_id: school_class.teacher_id,
       status_class: school_class.is_active,
     };
   }

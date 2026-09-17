@@ -1,4 +1,5 @@
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type CloseSchoolClassInput = {
   id: string;
@@ -12,10 +13,10 @@ export class CloseSchoolClassService {
   async execute(input: CloseSchoolClassInput): Promise<void> {
     const school_class = await this.schoolClassRepository.findById(input.id);
     if (!school_class) {
-      throw new Error(`Class with id "${input.id}" not found`);
+      throw new NotFoundError(`Class with id "${input.id}" not found`);
     }
     if (!school_class.is_active) {
-      throw new Error("Class is already closed");
+      throw new BadRequestError("Class is already closed");
     }
 
     school_class.close();

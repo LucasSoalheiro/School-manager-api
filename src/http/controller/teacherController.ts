@@ -14,6 +14,7 @@ import {
   teacherClassParamsSchema,
 } from "../schemas/teacherSchemas.js";
 import { uuidParamSchema } from "../schemas/studentSchemas.js";
+import { ForbiddenError } from "../../errors/AppError.js";
 
 export class TeacherController {
   constructor(
@@ -61,8 +62,11 @@ export class TeacherController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
-    const { name } = updateTeacherNameSchema.parse(request.body);
-    await this.updateTeacherNameService.execute({ id, name });
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only update your own data");
+    }
+    const body = updateTeacherNameSchema.parse(request.body);
+    await this.updateTeacherNameService.execute({ id, ...body });
     reply.send({ message: "Teacher name updated successfully" });
   };
 
@@ -71,6 +75,9 @@ export class TeacherController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only change your own password");
+    }
     const body = changeTeacherPasswordSchema.parse(request.body);
     await this.changeTeacherPasswordService.execute({ id, ...body });
     reply.send({ message: "Teacher password updated successfully" });
@@ -81,6 +88,9 @@ export class TeacherController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only manage your own classes");
+    }
     const { class_id } = addClassToTeacherSchema.parse(request.body);
     await this.addClassToTeacherService.execute({ teacher_id: id, class_id });
     reply.send({ message: "Class assigned to teacher successfully" });
@@ -91,6 +101,9 @@ export class TeacherController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id, class_id } = teacherClassParamsSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only manage your own classes");
+    }
     await this.removeClassFromTeacherService.execute({ teacher_id: id, class_id });
     reply.send({ message: "Class removed from teacher successfully" });
   };
@@ -100,6 +113,9 @@ export class TeacherController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only deactivate your own account");
+    }
     await this.deactivateTeacherService.execute({ id });
     reply.send({ message: "Teacher deactivated successfully" });
   };

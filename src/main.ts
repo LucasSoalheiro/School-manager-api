@@ -10,6 +10,7 @@ import { ZodError } from "zod";
 import { drizzle } from "drizzle-orm/neon-http";
 import { loadConfig } from "./config/env.js";
 import { registerRoutes } from "./http/routes/index.js";
+import { AppError } from "./errors/AppError.js";
 
 const config = loadConfig();
 const fastify = Fastify({ logger: config.node_env === "dev" });
@@ -40,28 +41,18 @@ async function main(): Promise<void> {
       return;
     }
 
-    const message = typeof error?.message === "string" ? error.message : "";
-
-    if (message.toLowerCase().includes("not found")) {
-      reply.status(404).send({ error: "Not Found", message });
-      return;
-    }
-
-    if (
-      message.includes("short") ||
-      message.includes("long") ||
-      message.includes("already") ||
-      message.includes("Cannot") ||
-      message.includes("must be")
-    ) {
-      reply.status(400).send({ error: "Bad Request", message });
+    if (error instanceof AppError) {
+      reply.status(error.statusCode).send({
+        error: error.name,
+        message: error.message,
+      });
       return;
     }
 
     fastify.log.error(error);
     reply.status(error.statusCode || 500).send({
       error: error.name || "Internal Server Error",
-      message: message || "An unexpected error occurred",
+      message: error.message || "An unexpected error occurred",
     });
   });
 

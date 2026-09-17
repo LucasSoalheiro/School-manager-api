@@ -38,6 +38,7 @@ export class SubjectController {
     const body = updateSubjectSchema.parse(request.body);
     await this.updateSubjectService.execute({
       id,
+      teacher_id: request.user.id,
       ...(body.name !== undefined ? { name: body.name } : {}),
       ...(body.description !== undefined ? { description: body.description } : {}),
     });
