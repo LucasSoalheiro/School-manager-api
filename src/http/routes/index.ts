@@ -134,7 +134,7 @@ export async function registerRoutes(
   );
 
   const gradeController = new GradeController(
-    new AssignGradeService(gradeRepo, studentRepo, activityRepo),
+    new AssignGradeService(gradeRepo, studentRepo, activityRepo, enrollmentRepo),
     new SubmitGradeService(gradeRepo),
     new GradeActivityService(gradeRepo),
     new GetGradesByStudentService(gradeRepo),

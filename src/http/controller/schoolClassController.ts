@@ -30,7 +30,11 @@ export class SchoolClassController {
     reply: FastifyReply,
   ): Promise<void> => {
     const body = createSchoolClassSchema.parse(request.body);
-    const output = await this.createSchoolClassService.execute(body);
+    const teacher_id = request.user.id;
+    const output = await this.createSchoolClassService.execute({
+      ...body,
+      teacher_id,
+    });
     reply.status(201).send(output);
   };
 

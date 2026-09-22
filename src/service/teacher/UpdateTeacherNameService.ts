@@ -1,4 +1,5 @@
 import type { ITeacherRepository } from "../../repository/ITeacherRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type UpdateTeacherNameInput = {
   id: string;
@@ -12,19 +13,19 @@ export class UpdateTeacherNameService {
   async execute(input: UpdateTeacherNameInput): Promise<void> {
     const teacher = await this.teacherRepository.findById(input.id);
     if (!teacher) {
-      throw new Error(`Teacher with id "${input.id}" not found`);
+      throw new NotFoundError(`Teacher with id "${input.id}" not found`);
     }
 
     if (input.name !== undefined) {
       if (input.name.length < 3 || input.name.length > 50) {
-        throw new Error("Name must be between 3 and 50 characters");
+        throw new BadRequestError("Name must be between 3 and 50 characters");
       }
       teacher.name = input.name;
     }
 
     if (input.last_name !== undefined) {
       if (input.last_name.length < 3 || input.last_name.length > 50) {
-        throw new Error("Last name must be between 3 and 50 characters");
+        throw new BadRequestError("Last name must be between 3 and 50 characters");
       }
       teacher.last_name = input.last_name;
     }

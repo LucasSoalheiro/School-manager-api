@@ -1,5 +1,6 @@
 import type { Teacher } from "../../entity/teacher.js";
 import type { ITeacherRepository } from "../../repository/ITeacherRepository.js";
+import { NotFoundError } from "../../errors/AppError.js";
 
 type GetTeacherByIdInput = {
   id: string;
@@ -11,7 +12,7 @@ export class GetTeacherByIdService {
   async execute(input: GetTeacherByIdInput): Promise<Teacher> {
     const teacher = await this.teacherRepository.findById(input.id);
     if (!teacher) {
-      throw new Error(`Teacher with id "${input.id}" not found`);
+      throw new NotFoundError(`Teacher with id "${input.id}" not found`);
     }
     return teacher;
   }

@@ -9,9 +9,10 @@ export class School_class {
     private _students: Student[],
     private _activities: Activity[],
     private _status_class: boolean,
+    private _teacher_id: string | null = null,
   ) {}
 
-  public static create(class_name: string): School_class {
+  public static create(class_name: string, teacher_id?: string | null): School_class {
     if (class_name.trim().length < 2) {
       throw new Error("Class name is too short");
     }
@@ -21,6 +22,7 @@ export class School_class {
       [],
       [],
       true,
+      teacher_id ?? null,
     );
   }
 
@@ -30,8 +32,9 @@ export class School_class {
     students: Student[],
     activities: Activity[],
     status_class: boolean,
+    teacher_id: string | null = null,
   ): School_class {
-    return new School_class(id, class_name, students, activities, status_class);
+    return new School_class(id, class_name, students, activities, status_class, teacher_id);
   }
 
   public add_student(student: Student): void {
@@ -88,5 +91,13 @@ export class School_class {
 
   public get is_active(): boolean {
     return this._status_class;
+  }
+
+  public get teacher_id(): string | null {
+    return this._teacher_id;
+  }
+
+  public set teacher_id(id: string | null) {
+    this._teacher_id = id;
   }
 }

@@ -1,5 +1,6 @@
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
 import type { IEnrollmentRepository } from "../../repository/IEnrollmentRepository.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type RemoveStudentFromClassInput = {
   student_id: string;
@@ -17,7 +18,7 @@ export class RemoveStudentFromClassService {
       input.class_id,
     );
     if (!school_class) {
-      throw new Error(`Class with id "${input.class_id}" not found`);
+      throw new NotFoundError(`Class with id "${input.class_id}" not found`);
     }
 
     const enrollment = await this.enrollmentRepository.findByStudentAndClass(
@@ -25,7 +26,7 @@ export class RemoveStudentFromClassService {
       input.class_id,
     );
     if (!enrollment || !enrollment.is_active) {
-      throw new Error("Student is not actively enrolled in this class");
+      throw new BadRequestError("Student is not actively enrolled in this class");
     }
 
     school_class.remove_student(input.student_id);

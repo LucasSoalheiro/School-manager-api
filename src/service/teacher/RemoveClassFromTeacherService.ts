@@ -1,4 +1,5 @@
 import type { ITeacherRepository } from "../../repository/ITeacherRepository.js";
+import { NotFoundError } from "../../errors/AppError.js";
 
 type RemoveClassFromTeacherInput = {
   teacher_id: string;
@@ -11,7 +12,7 @@ export class RemoveClassFromTeacherService {
   async execute(input: RemoveClassFromTeacherInput): Promise<void> {
     const teacher = await this.teacherRepository.findById(input.teacher_id);
     if (!teacher) {
-      throw new Error(`Teacher with id "${input.teacher_id}" not found`);
+      throw new NotFoundError(`Teacher with id "${input.teacher_id}" not found`);
     }
 
     teacher.remove_class(input.class_id);

@@ -1,7 +1,9 @@
 import type { ISubjectRepository } from "../../repository/ISubjectRepository.js";
+import { NotFoundError, BadRequestError, ForbiddenError } from "../../errors/AppError.js";
 
 type UpdateSubjectInput = {
   id: string;
+  teacher_id: string;
   name?: string;
   description?: string;
 };
@@ -12,15 +14,23 @@ export class UpdateSubjectService {
   async execute(input: UpdateSubjectInput): Promise<void> {
     const subject = await this.subjectRepository.findById(input.id);
     if (!subject) {
-      throw new Error(`Subject with id "${input.id}" not found`);
+      throw new NotFoundError(`Subject with id "${input.id}" not found`);
     }
 
-    if (input.name !== undefined) {
-      subject.update_name(input.name);
+    if (subject.teacher_id !== input.teacher_id) {
+      throw new ForbiddenError("You can only update your own subjects");
     }
 
-    if (input.description !== undefined) {
-      subject.update_description(input.description);
+    try {
+      if (input.name !== undefined) {
+        subject.update_name(input.name);
+      }
+
+      if (input.description !== undefined) {
+        subject.update_description(input.description);
+      }
+    } catch (err: any) {
+      throw new BadRequestError(err.message);
     }
 
     await this.subjectRepository.update(subject);

@@ -2,6 +2,7 @@ import type { ISchoolClassRepository } from "../../repository/ISchoolClassReposi
 import type { IStudentRepository } from "../../repository/IStudentRepository.js";
 import type { IEnrollmentRepository } from "../../repository/IEnrollmentRepository.js";
 import { Enrollment } from "../../entity/enrollment.js";
+import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type AddStudentToClassInput = {
   student_id: string;
@@ -18,14 +19,20 @@ export class AddStudentToClassService {
   async execute(input: AddStudentToClassInput): Promise<void> {
     const student = await this.studentRepository.findById(input.student_id);
     if (!student) {
-      throw new Error(`Student with id "${input.student_id}" not found`);
+      throw new NotFoundError(`Student with id "${input.student_id}" not found`);
+    }
+    if (!student.is_active) {
+      throw new BadRequestError("Cannot enroll an inactive student");
     }
 
     const school_class = await this.schoolClassRepository.findById(
       input.class_id,
     );
     if (!school_class) {
-      throw new Error(`Class with id "${input.class_id}" not found`);
+      throw new NotFoundError(`Class with id "${input.class_id}" not found`);
+    }
+    if (!school_class.is_active) {
+      throw new BadRequestError("Cannot enroll a student in an inactive class");
     }
 
     const existing_enrollment =
@@ -34,7 +41,7 @@ export class AddStudentToClassService {
         input.class_id,
       );
     if (existing_enrollment?.is_active) {
-      throw new Error("Student is already enrolled in this class");
+      throw new BadRequestError("Student is already enrolled in this class");
     }
 
     // Add to the aggregate and create the enrollment record

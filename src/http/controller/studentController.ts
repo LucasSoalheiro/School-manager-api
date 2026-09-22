@@ -11,6 +11,7 @@ import {
   changeStudentPasswordSchema,
   uuidParamSchema,
 } from "../schemas/studentSchemas.js";
+import { ForbiddenError } from "../../errors/AppError.js";
 
 export class StudentController {
   constructor(
@@ -52,6 +53,9 @@ export class StudentController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only update your own data");
+    }
     const { name } = updateStudentNameSchema.parse(request.body);
     await this.updateStudentNameService.execute({ id, name });
     reply.send({ message: "Student name updated successfully" });
@@ -62,6 +66,9 @@ export class StudentController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only change your own password");
+    }
     const body = changeStudentPasswordSchema.parse(request.body);
     await this.changeStudentPasswordService.execute({ id, ...body });
     reply.send({ message: "Student password updated successfully" });
