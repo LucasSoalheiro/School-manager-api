@@ -14,7 +14,7 @@ export async function authenticate(
   try {
     await request.jwtVerify();
   } catch (err) {
-    reply.status(401).send({
+    return reply.status(401).send({
       error: "Unauthorized",
       message: "Invalid or missing JWT token",
     });
@@ -24,7 +24,7 @@ export async function authenticate(
 export function authorize(roles: Array<"student" | "teacher">) {
   return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     if (!request.user || !roles.includes(request.user.role)) {
-      reply.status(403).send({
+      return reply.status(403).send({
         error: "Forbidden",
         message: "Access denied for your user role",
       });

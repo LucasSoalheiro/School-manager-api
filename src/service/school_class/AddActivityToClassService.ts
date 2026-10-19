@@ -1,6 +1,10 @@
 import { Activity } from "../../entity/activity.js";
+import { Grade } from "../../entity/grade.js";
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
 import type { IActivityRepository } from "../../repository/IActivityRepository.js";
+import type { IEnrollmentRepository } from "../../repository/IEnrollmentRepository.js";
+import type { IStudentRepository } from "../../repository/IStudentRepository.js";
+import type { IGradeRepository } from "../../repository/IGradeRepository.js";
 import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
 
 type AddActivityToClassInput = {
@@ -19,6 +23,9 @@ export class AddActivityToClassService {
   constructor(
     private readonly schoolClassRepository: ISchoolClassRepository,
     private readonly activityRepository: IActivityRepository,
+    private readonly enrollmentRepository: IEnrollmentRepository,
+    private readonly studentRepository: IStudentRepository,
+    private readonly gradeRepository: IGradeRepository,
   ) {}
 
   async execute(
@@ -44,6 +51,17 @@ export class AddActivityToClassService {
     school_class.add_activity(activity);
 
     await this.activityRepository.save(activity);
+
+    const enrollments = await this.enrollmentRepository.findByClassId(school_class.id);
+    for (const enrollment of enrollments) {
+      if (enrollment.is_active) {
+        const student = await this.studentRepository.findById(enrollment.student_id);
+        if (student && student.is_active) {
+          const grade = Grade.create(student, activity);
+          await this.gradeRepository.save(grade);
+        }
+      }
+    }
 
     return {
       activity_id: activity.id,

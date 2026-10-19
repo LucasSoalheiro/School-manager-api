@@ -109,9 +109,9 @@ export async function registerRoutes(
   const schoolClassController = new SchoolClassController(
     new CreateSchoolClassService(schoolClassRepo),
     new GetSchoolClassByIdService(schoolClassRepo),
-    new AddStudentToClassService(schoolClassRepo, studentRepo, enrollmentRepo),
+    new AddStudentToClassService(schoolClassRepo, studentRepo, enrollmentRepo, gradeRepo),
     new RemoveStudentFromClassService(schoolClassRepo, enrollmentRepo),
-    new AddActivityToClassService(schoolClassRepo, activityRepo),
+    new AddActivityToClassService(schoolClassRepo, activityRepo, enrollmentRepo, studentRepo, gradeRepo),
     new CloseSchoolClassService(schoolClassRepo),
     new ReopenSchoolClassService(schoolClassRepo),
   );
@@ -136,7 +136,7 @@ export async function registerRoutes(
   const gradeController = new GradeController(
     new AssignGradeService(gradeRepo, studentRepo, activityRepo, enrollmentRepo),
     new SubmitGradeService(gradeRepo),
-    new GradeActivityService(gradeRepo),
+    new GradeActivityService(gradeRepo, activityRepo, schoolClassRepo),
     new GetGradesByStudentService(gradeRepo),
     new GetGradesByActivityService(gradeRepo),
   );

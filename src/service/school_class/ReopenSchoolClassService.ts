@@ -1,8 +1,9 @@
 import type { ISchoolClassRepository } from "../../repository/ISchoolClassRepository.js";
-import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
+import { NotFoundError, BadRequestError, ForbiddenError } from "../../errors/AppError.js";
 
 type ReopenSchoolClassInput = {
   id: string;
+  teacher_id?: string;
 };
 
 export class ReopenSchoolClassService {
@@ -14,6 +15,9 @@ export class ReopenSchoolClassService {
     const school_class = await this.schoolClassRepository.findById(input.id);
     if (!school_class) {
       throw new NotFoundError(`Class with id "${input.id}" not found`);
+    }
+    if (input.teacher_id && school_class.teacher_id && school_class.teacher_id !== input.teacher_id) {
+      throw new ForbiddenError("You can only reopen your own classes");
     }
     if (school_class.is_active) {
       throw new BadRequestError("Class is already open");

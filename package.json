@@ -8,8 +8,9 @@
 	"main": "out/main.js",
 	"scripts": {
 		"build": "npx tsc --build",
-		"start": "node ./out/main.js",
-		"test": "test"
+		"start": "node --env-file=.env ./out/main.js",
+		"dev": "node --env-file=.env --watch ./out/main.js",
+		"test": "echo \"No tests specified\" && exit 0"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^6.0.0",

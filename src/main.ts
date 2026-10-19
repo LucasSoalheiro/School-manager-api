@@ -49,6 +49,14 @@ async function main(): Promise<void> {
       return;
     }
 
+    if (error instanceof Error && !(error as any).statusCode && error.name === "Error") {
+      reply.status(400).send({
+        error: "BadRequestError",
+        message: error.message,
+      });
+      return;
+    }
+
     fastify.log.error(error);
     reply.status(error.statusCode || 500).send({
       error: error.name || "Internal Server Error",

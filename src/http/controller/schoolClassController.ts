@@ -78,7 +78,11 @@ export class SchoolClassController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id, student_id } = classStudentParamsSchema.parse(request.params);
-    await this.removeStudentFromClassService.execute({ class_id: id, student_id });
+    await this.removeStudentFromClassService.execute({
+      class_id: id,
+      student_id,
+      teacher_id: request.user?.id,
+    });
     reply.send({ message: "Student removed from class successfully" });
   };
 
@@ -102,7 +106,10 @@ export class SchoolClassController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
-    await this.closeSchoolClassService.execute({ id });
+    await this.closeSchoolClassService.execute({
+      id,
+      teacher_id: request.user?.id,
+    });
     reply.send({ message: "School class closed successfully" });
   };
 
@@ -111,7 +118,10 @@ export class SchoolClassController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
-    await this.reopenSchoolClassService.execute({ id });
+    await this.reopenSchoolClassService.execute({
+      id,
+      teacher_id: request.user?.id,
+    });
     reply.send({ message: "School class reopened successfully" });
   };
 }

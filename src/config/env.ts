@@ -24,8 +24,9 @@ export function loadConfig(): {
     throw new Error("PORT not found in environment");
   }
 
-  if (env.PORT.length != 4) {
-    throw new Error("PORT can only have four digits. Ex: 3000, 8080, 1234");
+  const portNumber = parseInt(env.PORT, 10);
+  if (isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
+    throw new Error("PORT must be a valid number between 1 and 65535");
   }
 
   if (env.SALT_ROUNDS == null) {

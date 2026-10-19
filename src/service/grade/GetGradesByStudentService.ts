@@ -1,5 +1,4 @@
-import type { Grade } from "../../entity/grade.js";
-import type { IGradeRepository } from "../../repository/IGradeRepository.js";
+import type { IGradeRepository, GradeWithDetails } from "../../repository/IGradeRepository.js";
 
 type GetGradesByStudentInput = {
   student_id: string;
@@ -8,7 +7,7 @@ type GetGradesByStudentInput = {
 export class GetGradesByStudentService {
   constructor(private readonly gradeRepository: IGradeRepository) {}
 
-  async execute(input: GetGradesByStudentInput): Promise<Grade[]> {
-    return this.gradeRepository.findByStudentId(input.student_id);
+  async execute(input: GetGradesByStudentInput): Promise<GradeWithDetails[]> {
+    return this.gradeRepository.findByStudentIdWithDetails(input.student_id);
   }
 }

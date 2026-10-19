@@ -34,7 +34,10 @@ export class GradeController {
     reply: FastifyReply,
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
-    await this.submitGradeService.execute({ grade_id: id });
+    await this.submitGradeService.execute({
+      grade_id: id,
+      student_id: request.user.id,
+    });
     reply.send({ message: "Grade submitted successfully" });
   };
 
@@ -46,6 +49,7 @@ export class GradeController {
     const { score, feedback } = gradeActivitySchema.parse(request.body);
     await this.gradeActivityService.execute({
       grade_id: id,
+      teacher_id: request.user.id,
       score,
       ...(feedback !== undefined ? { feedback } : {}),
     });
@@ -69,6 +73,8 @@ export class GradeController {
         status: g.status,
         submitted_at: g.submitted_at,
         feedback: g.feedback,
+        activity_title: g.activity_title ?? null,
+        class_name: g.class_name ?? null,
       })),
     );
   };
