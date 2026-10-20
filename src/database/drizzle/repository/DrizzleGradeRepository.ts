@@ -89,6 +89,40 @@ export class DrizzleGradeRepository implements IGradeRepository {
     return rows.map(GradeMapper.toDomain);
   }
 
+  async findByTeacherId(teacher_id: string): Promise<GradeWithDetails[]> {
+    const rows = await this.db
+      .select({
+        id: grade_table.id,
+        student_id: grade_table.student_id,
+        activity_id: grade_table.activity_id,
+        score: grade_table.score,
+        status: grade_table.status,
+        submitted_at: grade_table.submitted_at,
+        feedback: grade_table.feedback,
+        activity_title: activity_table.title,
+        class_name: school_class_table.class_name,
+      })
+      .from(grade_table)
+      .innerJoin(activity_table, eq(grade_table.activity_id, activity_table.id))
+      .innerJoin(
+        school_class_table,
+        eq(activity_table.school_class_id, school_class_table.id),
+      )
+      .where(eq(school_class_table.teacher_id, teacher_id));
+
+    return rows.map((r) => ({
+      id: r.id,
+      student_id: r.student_id,
+      activity_id: r.activity_id,
+      score: r.score,
+      status: r.status,
+      submitted_at: r.submitted_at,
+      feedback: r.feedback,
+      activity_title: r.activity_title ?? null,
+      class_name: r.class_name ?? null,
+    }));
+  }
+
   async findByStudentAndActivity(
     student_id: string,
     activity_id: string,

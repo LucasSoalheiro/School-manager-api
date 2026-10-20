@@ -69,7 +69,11 @@ export class SchoolClassController {
   ): Promise<void> => {
     const { id } = uuidParamSchema.parse(request.params);
     const { student_id } = addStudentToClassSchema.parse(request.body);
-    await this.addStudentToClassService.execute({ class_id: id, student_id });
+    await this.addStudentToClassService.execute({
+      class_id: id,
+      student_id,
+      teacher_id: request.user?.id,
+    });
     reply.send({ message: "Student added to class successfully" });
   };
 
@@ -97,6 +101,7 @@ export class SchoolClassController {
       title: body.title,
       description: body.description,
       ...(body.delivery_date !== undefined ? { delivery_date: body.delivery_date } : {}),
+      teacher_id: request.user?.id,
     });
     reply.status(201).send(output);
   };

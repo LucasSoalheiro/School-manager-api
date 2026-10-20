@@ -13,6 +13,12 @@ export default async function studentRoutes(
 
   // Protected endpoints
   fastify.get(
+    "/",
+    { onRequest: [authenticate, authorize(["teacher"])] },
+    controller.list,
+  );
+
+  fastify.get(
     "/:id",
     { onRequest: [authenticate] },
     controller.getById,

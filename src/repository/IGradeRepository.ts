@@ -19,6 +19,7 @@ export interface IGradeRepository {
   findByStudentId(student_id: string): Promise<Grade[]>;
   findByStudentIdWithDetails(student_id: string): Promise<GradeWithDetails[]>;
   findByActivityId(activity_id: string): Promise<Grade[]>;
+  findByTeacherId(teacher_id: string): Promise<GradeWithDetails[]>;
   findByStudentAndActivity(
     student_id: string,
     activity_id: string,

@@ -25,4 +25,10 @@ export async function subjectRoutes(
     { onRequest: [authenticate] },
     controller.getByClass,
   );
+
+  fastify.get(
+    "/:id",
+    { onRequest: [authenticate] },
+    controller.getById,
+  );
 }

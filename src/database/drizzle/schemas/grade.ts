@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, real, text, timestamp, uuid, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgEnum, pgTable, real, text, timestamp, uuid, uniqueIndex, index } from "drizzle-orm/pg-core";
 import { student_table } from "./student.js";
 import { activity_table } from "./activity.js";
 
@@ -25,5 +25,7 @@ export const grade_table = pgTable(
   },
   (table) => [
     uniqueIndex("grade_student_activity_idx").on(table.student_id, table.activity_id),
+    index("grade_activity_id_idx").on(table.activity_id),
+    index("grade_student_id_idx").on(table.student_id),
   ],
 );

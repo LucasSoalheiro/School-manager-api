@@ -17,6 +17,7 @@ import { UpdateStudentNameService } from "../../service/student/UpdateStudentNam
 import { ChangeStudentPasswordService } from "../../service/student/ChangeStudentPasswordService.js";
 import { ActivateStudentService } from "../../service/student/ActivateStudentService.js";
 import { DeactivateStudentService } from "../../service/student/DeactivateStudentService.js";
+import { ListStudentsService } from "../../service/student/ListStudentsService.js";
 
 import { RegisterTeacherService } from "../../service/teacher/RegisterTeacherService.js";
 import { GetTeacherByIdService } from "../../service/teacher/GetTeacherByIdService.js";
@@ -37,6 +38,7 @@ import { ReopenSchoolClassService } from "../../service/school_class/ReopenSchoo
 import { CreateSubjectService } from "../../service/subject/CreateSubjectService.js";
 import { UpdateSubjectService } from "../../service/subject/UpdateSubjectService.js";
 import { GetSubjectsByClassService } from "../../service/subject/GetSubjectsByClassService.js";
+import { GetSubjectByIdService } from "../../service/subject/GetSubjectByIdService.js";
 
 import { CancelEnrollmentService } from "../../service/enrollment/CancelEnrollmentService.js";
 import { ConcludeEnrollmentService } from "../../service/enrollment/ConcludeEnrollmentService.js";
@@ -50,6 +52,7 @@ import { SubmitGradeService } from "../../service/grade/SubmitGradeService.js";
 import { GradeActivityService } from "../../service/grade/GradeActivityService.js";
 import { GetGradesByStudentService } from "../../service/grade/GetGradesByStudentService.js";
 import { GetGradesByActivityService } from "../../service/grade/GetGradesByActivityService.js";
+import { GetGradesByTeacherService } from "../../service/grade/GetGradesByTeacherService.js";
 
 // Controllers
 import { AuthController } from "../controller/authController.js";
@@ -94,6 +97,7 @@ export async function registerRoutes(
     new ChangeStudentPasswordService(studentRepo),
     new ActivateStudentService(studentRepo),
     new DeactivateStudentService(studentRepo),
+    new ListStudentsService(studentRepo),
   );
 
   const teacherController = new TeacherController(
@@ -120,6 +124,7 @@ export async function registerRoutes(
     new CreateSubjectService(subjectRepo, teacherRepo, schoolClassRepo),
     new UpdateSubjectService(subjectRepo),
     new GetSubjectsByClassService(subjectRepo),
+    new GetSubjectByIdService(subjectRepo),
   );
 
   const enrollmentController = new EnrollmentController(
@@ -139,6 +144,7 @@ export async function registerRoutes(
     new GradeActivityService(gradeRepo, activityRepo, schoolClassRepo),
     new GetGradesByStudentService(gradeRepo),
     new GetGradesByActivityService(gradeRepo),
+    new GetGradesByTeacherService(gradeRepo),
   );
 
   // Register route groups

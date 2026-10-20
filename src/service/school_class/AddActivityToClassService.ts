@@ -5,13 +5,14 @@ import type { IActivityRepository } from "../../repository/IActivityRepository.j
 import type { IEnrollmentRepository } from "../../repository/IEnrollmentRepository.js";
 import type { IStudentRepository } from "../../repository/IStudentRepository.js";
 import type { IGradeRepository } from "../../repository/IGradeRepository.js";
-import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
+import { NotFoundError, BadRequestError, ForbiddenError } from "../../errors/AppError.js";
 
 type AddActivityToClassInput = {
   class_id: string;
   title: string;
   description: string;
   delivery_date?: Date;
+  teacher_id?: string;
 };
 
 type AddActivityToClassOutput = {
@@ -36,6 +37,9 @@ export class AddActivityToClassService {
     );
     if (!school_class) {
       throw new NotFoundError(`Class with id "${input.class_id}" not found`);
+    }
+    if (input.teacher_id && school_class.teacher_id && school_class.teacher_id !== input.teacher_id) {
+      throw new ForbiddenError("You can only add activities to your own classes");
     }
     if (!school_class.is_active) {
       throw new BadRequestError("Cannot add activities to an inactive class");

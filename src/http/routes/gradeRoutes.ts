@@ -37,4 +37,10 @@ export async function gradeRoutes(
     { onRequest: [authenticate] },
     controller.getByActivity,
   );
+
+  fastify.get(
+    "/teacher/:teacher_id",
+    { onRequest: [authenticate, authorize(["teacher"])] },
+    controller.getByTeacher,
+  );
 }

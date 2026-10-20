@@ -53,6 +53,18 @@ export class TeacherController {
         id: sc.id,
         class_name: sc.class_name,
         is_active: sc.is_active,
+        students: sc.students.map((s) => ({
+          id: s.id,
+          name: s.full_name,
+          email: s.email,
+        })),
+        activities: sc.activities.map((a) => ({
+          id: a.id,
+          title: a.title,
+          description: a.description,
+          created_at: a.created_at,
+          delivery_date: a.delivery_date,
+        })),
       })),
     });
   };

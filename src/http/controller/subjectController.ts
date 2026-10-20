@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import type { CreateSubjectService } from "../../service/subject/CreateSubjectService.js";
 import type { UpdateSubjectService } from "../../service/subject/UpdateSubjectService.js";
 import type { GetSubjectsByClassService } from "../../service/subject/GetSubjectsByClassService.js";
+import type { GetSubjectByIdService } from "../../service/subject/GetSubjectByIdService.js";
 import {
   createSubjectSchema,
   updateSubjectSchema,
@@ -14,6 +15,7 @@ export class SubjectController {
     private readonly createSubjectService: CreateSubjectService,
     private readonly updateSubjectService: UpdateSubjectService,
     private readonly getSubjectsByClassService: GetSubjectsByClassService,
+    private readonly getSubjectByIdService: GetSubjectByIdService,
   ) {}
 
   public create = async (
@@ -62,5 +64,20 @@ export class SubjectController {
         school_class_id: s.school_class_id,
       })),
     );
+  };
+
+  public getById = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> => {
+    const { id } = uuidParamSchema.parse(request.params);
+    const subject = await this.getSubjectByIdService.execute({ id });
+    reply.send({
+      id: subject.id,
+      name: subject.name,
+      description: subject.description,
+      teacher_id: subject.teacher_id,
+      school_class_id: subject.school_class_id,
+    });
   };
 }

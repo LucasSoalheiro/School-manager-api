@@ -1,12 +1,13 @@
 import { hash, compare } from "bcrypt";
 import { loadConfig } from "../../config/env.js";
+import { BadRequestError } from "../../errors/AppError.js";
 
 export class Password {
   private constructor(private _hashed_password: string) {}
 
   public static async create(password: string): Promise<Password> {
     if (password.length < 6) {
-      throw new Error("Password too short, it needs at least 6 characters");
+      throw new BadRequestError("Password too short, it needs at least 6 characters");
     }
 
     const hashed_password = await hash(password, loadConfig().salt_rounds);

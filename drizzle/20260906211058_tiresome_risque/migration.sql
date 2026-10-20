@@ -67,4 +67,14 @@ ALTER TABLE "grade" ADD CONSTRAINT "grade_student_id_student_id_fkey" FOREIGN KE
 ALTER TABLE "grade" ADD CONSTRAINT "grade_activity_id_activity_id_fkey" FOREIGN KEY ("activity_id") REFERENCES "activity"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "school_class" ADD CONSTRAINT "school_class_teacher_id_teacher_id_fkey" FOREIGN KEY ("teacher_id") REFERENCES "teacher"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "subject" ADD CONSTRAINT "subject_teacher_id_teacher_id_fkey" FOREIGN KEY ("teacher_id") REFERENCES "teacher"("id") ON DELETE CASCADE;--> statement-breakpoint
-ALTER TABLE "subject" ADD CONSTRAINT "subject_school_class_id_school_class_id_fkey" FOREIGN KEY ("school_class_id") REFERENCES "school_class"("id") ON DELETE CASCADE;
+ALTER TABLE "subject" ADD CONSTRAINT "subject_school_class_id_school_class_id_fkey" FOREIGN KEY ("school_class_id") REFERENCES "school_class"("id") ON DELETE CASCADE;--> statement-breakpoint
+CREATE UNIQUE INDEX "enrollment_student_class_idx" ON "enrollment" ("student_id", "school_class_id");--> statement-breakpoint
+CREATE INDEX "enrollment_school_class_id_idx" ON "enrollment" ("school_class_id");--> statement-breakpoint
+CREATE INDEX "enrollment_student_id_idx" ON "enrollment" ("student_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "grade_student_activity_idx" ON "grade" ("student_id", "activity_id");--> statement-breakpoint
+CREATE INDEX "grade_activity_id_idx" ON "grade" ("activity_id");--> statement-breakpoint
+CREATE INDEX "grade_student_id_idx" ON "grade" ("student_id");--> statement-breakpoint
+CREATE INDEX "school_class_teacher_id_idx" ON "school_class" ("teacher_id");--> statement-breakpoint
+CREATE INDEX "activity_school_class_id_idx" ON "activity" ("school_class_id");--> statement-breakpoint
+CREATE INDEX "subject_teacher_id_idx" ON "subject" ("teacher_id");--> statement-breakpoint
+CREATE INDEX "subject_school_class_id_idx" ON "subject" ("school_class_id");

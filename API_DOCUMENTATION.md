@@ -261,6 +261,28 @@ Realiza a autenticação de um professor cadastrado e retorna um token JWT.
 
 ---
 
+### 2.7. Listar Todos os Estudantes
+* **Método:** `GET`
+* **Rota:** `/students`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`)
+
+#### Resposta
+* **`200 OK`**
+```json
+[
+  {
+    "id": "c1f7a8e2-9b21-4d3f-8a5e-123456789abc",
+    "email": "joao.silva@email.com",
+    "name": "João",
+    "last_name": "Silva",
+    "full_name": "João Silva",
+    "is_active": true
+  }
+]
+```
+
+---
+
 ## 3. Professores (`/teachers`)
 
 ### 3.1. Cadastrar Professor
@@ -528,6 +550,46 @@ Matricula um aluno na turma e gera um registro em `enrollment`.
 
 ---
 
+### 5.3. Buscar Disciplina por ID
+* **Método:** `GET`
+* **Rota:** `/subjects/:id`
+* **Autenticação:** Exige Token JWT
+
+#### Resposta
+* **`200 OK`**
+```json
+{
+  "id": "e8d7c6b5-a4f3-2e1d-0c9b-8a7f6e5d4c3b",
+  "name": "Matemática Aplicada",
+  "description": "Cálculo diferencial e integral.",
+  "teacher_id": "b2e6a7d1-8c10-4b2e-9d4c-012345678def",
+  "school_class_id": "f4e3d2c1-b0a9-8f7e-6d5c-4b3a2e1d0c9b"
+}
+```
+
+---
+
+### 5.4. Buscar Disciplinas por Turma
+* **Método:** `GET`
+* **Rota:** `/subjects/class/:class_id`
+* **Autenticação:** Exige Token JWT
+
+#### Resposta
+* **`200 OK`**
+```json
+[
+  {
+    "id": "e8d7c6b5-a4f3-2e1d-0c9b-8a7f6e5d4c3b",
+    "name": "Matemática Aplicada",
+    "description": "Cálculo diferencial e integral.",
+    "teacher_id": "b2e6a7d1-8c10-4b2e-9d4c-012345678def",
+    "school_class_id": "f4e3d2c1-b0a9-8f7e-6d5c-4b3a2e1d0c9b"
+  }
+]
+```
+
+---
+
 ## 6. Matrículas (`/enrollments`)
 
 ### 6.1. Buscar Matrículas por Estudante
@@ -706,6 +768,32 @@ Atribui nota (0 a 10) e feedback a uma atividade previamente submetida.
 
 ---
 
+### 8.6. Buscar Todas as Notas/Submissões por Professor
+* **Método:** `GET`
+* **Rota:** `/grades/teacher/:teacher_id`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`)
+
+#### Resposta
+* **`200 OK`**
+```json
+[
+  {
+    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "student_id": "c1f7a8e2-9b21-4d3f-8a5e-123456789abc",
+    "activity_id": "a9b8c7d6-e5f4-3a2b-1c0d-9e8f7a6b5c4d",
+    "score": 9.5,
+    "status": "graded",
+    "submitted_at": "2026-09-07T14:30:00.000Z",
+    "feedback": "Excelente resolução dos exercícios!",
+    "activity_title": "Lista de Exercícios 1",
+    "class_name": "Matemática 101"
+  }
+]
+```
+
+
+---
+
 ### 8.5. Buscar Notas por Atividade
 * **Método:** `GET`
 * **Rota:** `/grades/activity/:activity_id`
@@ -726,3 +814,29 @@ Atribui nota (0 a 10) e feedback a uma atividade previamente submetida.
   }
 ]
 ```
+
+---
+
+### 8.6. Buscar Todas as Notas/Submissões por Professor
+* **Método:** `GET`
+* **Rota:** `/grades/teacher/:teacher_id`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`)
+
+#### Resposta
+* **`200 OK`**
+```json
+[
+  {
+    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    "student_id": "c1f7a8e2-9b21-4d3f-8a5e-123456789abc",
+    "activity_id": "a9b8c7d6-e5f4-3a2b-1c0d-9e8f7a6b5c4d",
+    "score": 9.5,
+    "status": "graded",
+    "submitted_at": "2026-09-07T14:30:00.000Z",
+    "feedback": "Excelente resolução dos exercícios!",
+    "activity_title": "Lista de Exercícios 1",
+    "class_name": "Matemática 101"
+  }
+]
+```
+

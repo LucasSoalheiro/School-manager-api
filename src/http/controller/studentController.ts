@@ -5,6 +5,7 @@ import type { UpdateStudentNameService } from "../../service/student/UpdateStude
 import type { ChangeStudentPasswordService } from "../../service/student/ChangeStudentPasswordService.js";
 import type { ActivateStudentService } from "../../service/student/ActivateStudentService.js";
 import type { DeactivateStudentService } from "../../service/student/DeactivateStudentService.js";
+import type { ListStudentsService } from "../../service/student/ListStudentsService.js";
 import {
   registerStudentSchema,
   updateStudentNameSchema,
@@ -21,6 +22,7 @@ export class StudentController {
     private readonly changeStudentPasswordService: ChangeStudentPasswordService,
     private readonly activateStudentService: ActivateStudentService,
     private readonly deactivateStudentService: DeactivateStudentService,
+    private readonly listStudentsService: ListStudentsService,
   ) {}
 
   public register = async (
@@ -90,5 +92,22 @@ export class StudentController {
     const { id } = uuidParamSchema.parse(request.params);
     await this.deactivateStudentService.execute({ id });
     reply.send({ message: "Student deactivated successfully" });
+  };
+
+  public list = async (
+    _request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> => {
+    const students = await this.listStudentsService.execute();
+    reply.send(
+      students.map((s) => ({
+        id: s.id,
+        email: s.email,
+        name: s.name,
+        last_name: s.last_name,
+        full_name: s.full_name,
+        is_active: s.is_active,
+      })),
+    );
   };
 }

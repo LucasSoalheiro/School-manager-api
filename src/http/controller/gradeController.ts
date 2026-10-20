@@ -4,6 +4,7 @@ import type { SubmitGradeService } from "../../service/grade/SubmitGradeService.
 import type { GradeActivityService } from "../../service/grade/GradeActivityService.js";
 import type { GetGradesByStudentService } from "../../service/grade/GetGradesByStudentService.js";
 import type { GetGradesByActivityService } from "../../service/grade/GetGradesByActivityService.js";
+import type { GetGradesByTeacherService } from "../../service/grade/GetGradesByTeacherService.js";
 import {
   assignGradeSchema,
   gradeActivitySchema,
@@ -18,6 +19,7 @@ export class GradeController {
     private readonly gradeActivityService: GradeActivityService,
     private readonly getGradesByStudentService: GetGradesByStudentService,
     private readonly getGradesByActivityService: GetGradesByActivityService,
+    private readonly getGradesByTeacherService: GetGradesByTeacherService,
   ) {}
 
   public assignGrade = async (
@@ -96,6 +98,29 @@ export class GradeController {
         status: g.status,
         submitted_at: g.submitted_at,
         feedback: g.feedback,
+      })),
+    );
+  };
+
+  public getByTeacher = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> => {
+    const { teacher_id } = z
+      .object({ teacher_id: z.string().uuid() })
+      .parse(request.params);
+    const grades = await this.getGradesByTeacherService.execute({ teacher_id });
+    reply.send(
+      grades.map((g) => ({
+        id: g.id,
+        student_id: g.student_id,
+        activity_id: g.activity_id,
+        score: g.score,
+        status: g.status,
+        submitted_at: g.submitted_at,
+        feedback: g.feedback,
+        activity_title: g.activity_title ?? null,
+        class_name: g.class_name ?? null,
       })),
     );
   };

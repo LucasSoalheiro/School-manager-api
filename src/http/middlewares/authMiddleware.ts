@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { UnauthorizedError, ForbiddenError } from "../../errors/AppError.js";
 
 declare module "@fastify/jwt" {
   interface FastifyJWT {
@@ -14,20 +15,15 @@ export async function authenticate(
   try {
     await request.jwtVerify();
   } catch (err) {
-    return reply.status(401).send({
-      error: "Unauthorized",
-      message: "Invalid or missing JWT token",
-    });
+    throw new UnauthorizedError("Invalid or missing JWT token");
   }
 }
 
 export function authorize(roles: Array<"student" | "teacher">) {
   return async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+    if (reply.sent) return;
     if (!request.user || !roles.includes(request.user.role)) {
-      return reply.status(403).send({
-        error: "Forbidden",
-        message: "Access denied for your user role",
-      });
+      throw new ForbiddenError("Access denied for your user role");
     }
   };
 }

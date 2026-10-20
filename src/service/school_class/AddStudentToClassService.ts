@@ -4,11 +4,12 @@ import type { IEnrollmentRepository } from "../../repository/IEnrollmentReposito
 import type { IGradeRepository } from "../../repository/IGradeRepository.js";
 import { Enrollment } from "../../entity/enrollment.js";
 import { Grade } from "../../entity/grade.js";
-import { NotFoundError, BadRequestError } from "../../errors/AppError.js";
+import { NotFoundError, BadRequestError, ForbiddenError } from "../../errors/AppError.js";
 
 type AddStudentToClassInput = {
   student_id: string;
   class_id: string;
+  teacher_id?: string;
 };
 
 export class AddStudentToClassService {
@@ -33,6 +34,9 @@ export class AddStudentToClassService {
     );
     if (!school_class) {
       throw new NotFoundError(`Class with id "${input.class_id}" not found`);
+    }
+    if (input.teacher_id && school_class.teacher_id && school_class.teacher_id !== input.teacher_id) {
+      throw new ForbiddenError("You can only add students to your own classes");
     }
     if (!school_class.is_active) {
       throw new BadRequestError("Cannot enroll a student in an inactive class");
