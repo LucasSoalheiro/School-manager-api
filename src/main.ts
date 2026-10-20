@@ -49,7 +49,19 @@ async function main(): Promise<void> {
       return;
     }
 
-    if (error instanceof Error && !(error as any).statusCode && error.name === "Error") {
+    // Fastify built-in errors (401 from JWT, 404 routes, 429 rate limit, ...)
+    const statusCode = error.statusCode;
+    if (typeof statusCode === "number" && statusCode >= 400 && statusCode < 500) {
+      reply.status(statusCode).send({
+        error: error.code ?? error.name ?? "Request Error",
+        message: error.message,
+      });
+      return;
+    }
+
+    // Plain domain errors thrown by the entities are client mistakes
+    // (invalid input), so they map to 400 instead of 500.
+    if (error instanceof Error && error.name === "Error") {
       reply.status(400).send({
         error: "BadRequestError",
         message: error.message,
@@ -58,7 +70,7 @@ async function main(): Promise<void> {
     }
 
     fastify.log.error(error);
-    reply.status(error.statusCode || 500).send({
+    reply.status(statusCode || 500).send({
       error: error.name || "Internal Server Error",
       message: error.message || "An unexpected error occurred",
     });

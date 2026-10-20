@@ -6,6 +6,7 @@ import type { ChangeTeacherPasswordService } from "../../service/teacher/ChangeT
 import type { AddClassToTeacherService } from "../../service/teacher/AddClassToTeacherService.js";
 import type { RemoveClassFromTeacherService } from "../../service/teacher/RemoveClassFromTeacherService.js";
 import type { DeactivateTeacherService } from "../../service/teacher/DeactivateTeacherService.js";
+import type { ActivateTeacherService } from "../../service/teacher/ActivateTeacherService.js";
 import {
   registerTeacherSchema,
   updateTeacherNameSchema,
@@ -25,6 +26,7 @@ export class TeacherController {
     private readonly addClassToTeacherService: AddClassToTeacherService,
     private readonly removeClassFromTeacherService: RemoveClassFromTeacherService,
     private readonly deactivateTeacherService: DeactivateTeacherService,
+    private readonly activateTeacherService: ActivateTeacherService,
   ) {}
 
   public register = async (
@@ -130,5 +132,17 @@ export class TeacherController {
     }
     await this.deactivateTeacherService.execute({ id });
     reply.send({ message: "Teacher deactivated successfully" });
+  };
+
+  public activate = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ): Promise<void> => {
+    const { id } = uuidParamSchema.parse(request.params);
+    if (request.user.id !== id) {
+      throw new ForbiddenError("You can only activate your own account");
+    }
+    await this.activateTeacherService.execute({ id });
+    reply.send({ message: "Teacher activated successfully" });
   };
 }

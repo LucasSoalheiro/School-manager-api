@@ -26,6 +26,7 @@ import { ChangeTeacherPasswordService } from "../../service/teacher/ChangeTeache
 import { AddClassToTeacherService } from "../../service/teacher/AddClassToTeacherService.js";
 import { RemoveClassFromTeacherService } from "../../service/teacher/RemoveClassFromTeacherService.js";
 import { DeactivateTeacherService } from "../../service/teacher/DeactivateTeacherService.js";
+import { ActivateTeacherService } from "../../service/teacher/ActivateTeacherService.js";
 
 import { CreateSchoolClassService } from "../../service/school_class/CreateSchoolClassService.js";
 import { GetSchoolClassByIdService } from "../../service/school_class/GetSchoolClassByIdService.js";
@@ -108,6 +109,7 @@ export async function registerRoutes(
     new AddClassToTeacherService(teacherRepo, schoolClassRepo),
     new RemoveClassFromTeacherService(teacherRepo),
     new DeactivateTeacherService(teacherRepo),
+    new ActivateTeacherService(teacherRepo),
   );
 
   const schoolClassController = new SchoolClassController(

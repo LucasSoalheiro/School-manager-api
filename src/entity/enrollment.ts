@@ -33,6 +33,24 @@ export class Enrollment {
     );
   }
 
+  /**
+   * Reactivates a previously cancelled enrollment.
+   *
+   * The database enforces a unique (student_id, school_class_id) index, so a
+   * student that left a class cannot receive a brand new enrollment row. The
+   * existing record is reused instead and its enrollment date is refreshed.
+   */
+  public reactivate(): void {
+    if (this._status === "active") {
+      throw new Error("Enrollment is already active");
+    }
+    if (this._status === "concluded") {
+      throw new Error("Cannot reactivate a concluded enrollment");
+    }
+    this._status = "active";
+    this._enrolled_at = new Date();
+  }
+
   public static restore(
     id: string,
     student_id: string,

@@ -47,4 +47,10 @@ export async function teacherRoutes(
     { onRequest: [authenticate, authorize(["teacher"])] },
     controller.deactivate,
   );
+
+  fastify.patch(
+    "/:id/activate",
+    { onRequest: [authenticate, authorize(["teacher"])] },
+    controller.activate,
+  );
 }

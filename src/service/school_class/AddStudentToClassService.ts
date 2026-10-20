@@ -51,12 +51,20 @@ export class AddStudentToClassService {
       throw new BadRequestError("Student is already enrolled in this class");
     }
 
-    // Add to the aggregate and create the enrollment record
+    // Add to the aggregate and create (or reactivate) the enrollment record.
+    // A cancelled enrollment cannot be inserted again because of the unique
+    // (student_id, school_class_id) index, so the existing row is reused.
     school_class.add_student(student);
-    const enrollment = Enrollment.create(student, school_class);
 
     await this.schoolClassRepository.update(school_class);
-    await this.enrollmentRepository.save(enrollment);
+
+    if (existing_enrollment) {
+      existing_enrollment.reactivate();
+      await this.enrollmentRepository.update(existing_enrollment);
+    } else {
+      const enrollment = Enrollment.create(student, school_class);
+      await this.enrollmentRepository.save(enrollment);
+    }
 
     // Create pending Grade records for all existing activities in this class
     for (const activity of school_class.activities) {

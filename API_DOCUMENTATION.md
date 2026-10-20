@@ -129,7 +129,8 @@ Realiza a autenticação de um professor cadastrado e retorna um token JWT.
 ```json
 {
   "id": "c1f7a8e2-9b21-4d3f-8a5e-123456789abc",
-  "email": "joao.silva@email.com"
+  "email": "joao.silva@email.com",
+  "full_name": "João Silva"
 }
 ```
 
@@ -305,7 +306,8 @@ Realiza a autenticação de um professor cadastrado e retorna um token JWT.
 ```json
 {
   "id": "e8d9a7f1-4c3b-2a1d-9f8e-987654321cba",
-  "email": "maria.oliveira@escola.com"
+  "email": "maria.oliveira@escola.com",
+  "full_name": "Maria Oliveira"
 }
 ```
 
@@ -370,6 +372,81 @@ Realiza a autenticação de um professor cadastrado e retorna um token JWT.
 ```json
 {
   "message": "Class removed from teacher successfully"
+}
+```
+
+---
+
+### 3.5. Atualizar Nome do Professor
+* **Método:** `PATCH`
+* **Rota:** `/teachers/:id/name`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`; apenas o próprio professor)
+
+#### Exemplo de Body (JSON)
+```json
+{
+  "name": "Maria"
+}
+```
+
+#### Resposta
+* **`200 OK`**
+```json
+{
+  "message": "Teacher name updated successfully"
+}
+```
+
+---
+
+### 3.6. Alterar Senha do Professor
+* **Método:** `PATCH`
+* **Rota:** `/teachers/:id/password`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`; apenas o próprio professor)
+
+#### Exemplo de Body (JSON)
+```json
+{
+  "current_password": "senhaAntiga123",
+  "new_password": "senhaNova123"
+}
+```
+
+#### Resposta
+* **`200 OK`**
+```json
+{
+  "message": "Teacher password updated successfully"
+}
+```
+
+---
+
+### 3.7. Ativar Professor
+* **Método:** `PATCH`
+* **Rota:** `/teachers/:id/activate`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`; apenas o próprio professor)
+
+#### Resposta
+* **`200 OK`**
+```json
+{
+  "message": "Teacher activated successfully"
+}
+```
+
+---
+
+### 3.8. Desativar Professor
+* **Método:** `PATCH`
+* **Rota:** `/teachers/:id/deactivate`
+* **Autenticação:** Exige Token JWT (Regra: `teacher`; apenas o próprio professor)
+
+#### Resposta
+* **`200 OK`**
+```json
+{
+  "message": "Teacher deactivated successfully"
 }
 ```
 
@@ -765,32 +842,6 @@ Atribui nota (0 a 10) e feedback a uma atividade previamente submetida.
   }
 ]
 ```
-
----
-
-### 8.6. Buscar Todas as Notas/Submissões por Professor
-* **Método:** `GET`
-* **Rota:** `/grades/teacher/:teacher_id`
-* **Autenticação:** Exige Token JWT (Regra: `teacher`)
-
-#### Resposta
-* **`200 OK`**
-```json
-[
-  {
-    "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
-    "student_id": "c1f7a8e2-9b21-4d3f-8a5e-123456789abc",
-    "activity_id": "a9b8c7d6-e5f4-3a2b-1c0d-9e8f7a6b5c4d",
-    "score": 9.5,
-    "status": "graded",
-    "submitted_at": "2026-09-07T14:30:00.000Z",
-    "feedback": "Excelente resolução dos exercícios!",
-    "activity_title": "Lista de Exercícios 1",
-    "class_name": "Matemática 101"
-  }
-]
-```
-
 
 ---
 
